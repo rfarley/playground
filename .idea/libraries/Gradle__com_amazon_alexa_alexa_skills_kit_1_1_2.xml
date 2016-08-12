@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.amazon.alexa:alexa-skills-kit:1.1.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazon.alexa/alexa-skills-kit/1.1.2/c171c1b89c099123e0eba516813468e788781150/alexa-skills-kit-1.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazon.alexa/alexa-skills-kit/1.1.2/d607df919b5cc83cd7bc69ae1476e0c75077bfca/alexa-skills-kit-1.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

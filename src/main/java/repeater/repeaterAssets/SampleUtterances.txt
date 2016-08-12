@@ -1,0 +1,21 @@
+RepeaterIntent {a|RepeatText}
+RepeaterIntent {I|RepeatText}
+RepeaterIntent {You|RepeatText}
+RepeaterIntent {We|RepeatText}
+RepeaterIntent {He|RepeatText}
+RepeaterIntent {Them|RepeatText}
+RepeaterIntent {Everyone|RepeatText}
+RepeaterIntent {is a|RepeatText}
+RepeaterIntent {you are|RepeatText}
+RepeaterIntent {how are you|RepeatText}
+RepeaterIntent {I am awesome|RepeatText}
+RepeaterIntent {You are a dick|RepeatText}
+RepeaterIntent {I'm not your buddy|RepeatText}
+RepeaterIntent {What did you say|RepeatText}
+RepeaterIntent {What is a good movie|RepeatText}
+RepeaterIntent {How do I do things|RepeatText}
+RepeaterIntent {Where is a good place|RepeatText}
+RepeaterIntent {I like big butts you know|RepeatText}
+RepeaterIntent {here is my little friend see|RepeatText}
+RepeaterIntent {Jim is a cool guy you know|RepeatText}
+RepeaterIntent {Dobbie is a good house slave isn't he|RepeatText}
