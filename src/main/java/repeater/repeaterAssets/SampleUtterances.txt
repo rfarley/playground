@@ -7,6 +7,7 @@ RepeaterIntent {Them|RepeatText}
 RepeaterIntent {Everyone|RepeatText}
 RepeaterIntent {is a|RepeatText}
 RepeaterIntent {you are|RepeatText}
+RepeaterIntent {come here|RepeatText}
 RepeaterIntent {how are you|RepeatText}
 RepeaterIntent {I am awesome|RepeatText}
 RepeaterIntent {You are a dick|RepeatText}
