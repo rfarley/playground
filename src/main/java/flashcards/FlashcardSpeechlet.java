@@ -6,6 +6,7 @@ import com.amazon.speech.speechlet.*;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
+import com.amazon.speech.ui.SsmlOutputSpeech;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +20,11 @@ class FlashcardSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(FlashcardSpeechlet.class);
     private static final String CARD_TYPE_SLOT = "CardType";
     private static final String ANSWER_TYPE_SLOT = "Answer";
-    private static String question = "";
-    private static String answer = "";
+
+    private String question = "";
+    private String answer = "";
+    private int numCorrect = 0;
+    private int numIncorrect = 0;
 
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session)
@@ -64,12 +68,12 @@ class FlashcardSpeechlet implements Speechlet {
 
         } else if ("AMAZON.StopIntent".equals(intentName)) {
             PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
-            outputSpeech.setText("Goodbye");
+            outputSpeech.setText("You scored " + numCorrect + " out of " + (numCorrect+numIncorrect) + ".  Goodbye.");
 
             return SpeechletResponse.newTellResponse(outputSpeech);
         } else if ("AMAZON.CancelIntent".equals(intentName)) {
             PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
-            outputSpeech.setText("Goodbye");
+            outputSpeech.setText("You scored " + numCorrect + " out of " + (numCorrect+numIncorrect) + ".  Goodbye.");
 
             return SpeechletResponse.newTellResponse(outputSpeech);
         } else {
@@ -87,22 +91,15 @@ class FlashcardSpeechlet implements Speechlet {
 
     private SpeechletResponse getCardTypeResponse(Intent cardType) {
         Slot cardTypeSlot = cardType.getSlot(CARD_TYPE_SLOT);
-        Random rand = new Random();
 
         if (cardTypeSlot != null && cardTypeSlot.getValue() != null) {
             String deckName = cardTypeSlot.getValue();
 
             //Check if this deck exists
             if(deckName.equals("multiplication tables")) {
-                int a = rand.nextInt(10) + 1;
-                int b = rand.nextInt(10) + 1;
-                answer = a*b + "";
+                String askText = getMultiplicationAskText();
 
-                // Create speech output
-                String askText = "What is " + a + " times " + b + "?";
-                String repromptText = "What is " + a + " times " + b + "?";
-
-                return newAskResponse(askText, repromptText);
+                return newAskResponse(askText, askText);
             } else {
                 // We don't have this deck, so keep the session open and ask the user for another
                 // item.
@@ -125,16 +122,20 @@ class FlashcardSpeechlet implements Speechlet {
 
             if(givenAnswer.equals(answer)){
                 String responseText = "Correct!";
-                PlainTextOutputSpeech output = new PlainTextOutputSpeech();
-                output.setText(responseText);
+                //Get the next question and set the new answer
+                String askText = getMultiplicationAskText();
+                responseText += askText;
+                numCorrect++;
 
-                return SpeechletResponse.newTellResponse(output);
+                return newAskResponse(responseText,askText);
             } else {
-                String responseText = givenAnswer + " is incorrect.  The correct answer is " + answer;
-                PlainTextOutputSpeech output = new PlainTextOutputSpeech();
-                output.setText(responseText);
+                String responseText = givenAnswer + " is incorrect.  The correct answer is " + answer + " .";
+                //Get the next question and set the new answer
+                String askText = getMultiplicationAskText();
+                responseText += askText;
+                numIncorrect++;
 
-                return SpeechletResponse.newTellResponse(output);
+                return newAskResponse(responseText,askText);
             }
 
         } else {
@@ -148,21 +149,6 @@ class FlashcardSpeechlet implements Speechlet {
     private SpeechletResponse getHelpResponse() {
         String speechText =
                 "Say: multiplication tables or, cancel";
-
-        // Create the plain text output.
-        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-        speech.setText(speechText);
-
-        // Create reprompt
-        Reprompt reprompt = new Reprompt();
-        reprompt.setOutputSpeech(speech);
-
-        return SpeechletResponse.newAskResponse(speech, reprompt);
-    }
-
-    private SpeechletResponse getEmptyResponse(){
-        String speechText =
-                "Forget it, asshole.";
 
         // Create the plain text output.
         PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
@@ -195,6 +181,16 @@ class FlashcardSpeechlet implements Speechlet {
         reprompt.setOutputSpeech(repromptOutputSpeech);
 
         return SpeechletResponse.newAskResponse(outputSpeech, reprompt);
+    }
+
+    private String getMultiplicationAskText(){
+        Random rand = new Random();
+        int a = rand.nextInt(10) + 1;
+        int b = rand.nextInt(10) + 1;
+        answer = a*b + "";
+
+        // Create speech output
+        return "What is " + a + " times " + b + "?";
     }
 
 }
