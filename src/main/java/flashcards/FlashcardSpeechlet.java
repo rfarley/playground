@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 class FlashcardSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(FlashcardSpeechlet.class);
     private static final String CARD_TYPE_SLOT = "CardType";
+    private static final String ANSWER_TYPE_SLOT = "Answer";
 
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session)
@@ -50,6 +51,9 @@ class FlashcardSpeechlet implements Speechlet {
 
         if ("CardTypeIntent".equals(intentName)) {
             return getCardTypeResponse(intent);
+
+        } else if("AnswerIntent".equals(intentName)) {
+            return getAnswerResponse(intent);
 
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             return getHelpResponse();
@@ -86,18 +90,10 @@ class FlashcardSpeechlet implements Speechlet {
             //Check if this deck exists
             if(deckName.equals("multiplication tables")) {
                 // Create speech output
-                String speechText = "Here I will ask you a question.";
+                String askText = "What is 1 times 1?";
+                String repromptText = "What is 1 times 1?";
 
-                // Create the Simple card content.
-                SimpleCard card = new SimpleCard();
-                card.setTitle("Response");
-                card.setContent(speechText);
-
-                // Create the plain text output.
-                PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-                speech.setText(speechText);
-
-                return SpeechletResponse.newTellResponse(speech, card);
+                return newAskResponse(askText, repromptText);
             } else {
                 // We don't have this deck, so keep the session open and ask the user for another
                 // item.
@@ -107,6 +103,31 @@ class FlashcardSpeechlet implements Speechlet {
                 String repromptSpeech = "Tell me a different deck name.";
                 return newAskResponse(speechOutput, repromptSpeech);
             }
+        } else {
+            return getHelpResponse();
+        }
+    }
+
+    private SpeechletResponse getAnswerResponse(Intent answerType){
+        Slot answerTypeSlot = answerType.getSlot(ANSWER_TYPE_SLOT);
+
+        if(answerTypeSlot != null && answerTypeSlot.getValue() != null){
+            String answer = answerTypeSlot.getValue();
+
+            if(answer.equals("1")){
+                String responseText = "Correct!";
+                PlainTextOutputSpeech output = new PlainTextOutputSpeech();
+                output.setText(responseText);
+
+                return SpeechletResponse.newTellResponse(output);
+            } else {
+                String responseText = answer + " is incorrect.  The correct answer is 1";
+                PlainTextOutputSpeech output = new PlainTextOutputSpeech();
+                output.setText(responseText);
+
+                return SpeechletResponse.newTellResponse(output);
+            }
+
         } else {
             return getHelpResponse();
         }

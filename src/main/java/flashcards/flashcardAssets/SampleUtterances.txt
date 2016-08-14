@@ -1,1 +1,2 @@
 CardTypeIntent {CardType}
+AnswerIntent {Answer}
