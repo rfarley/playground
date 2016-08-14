@@ -9,6 +9,8 @@ import com.amazon.speech.ui.SimpleCard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Random;
+
 /**
  * This simple sample has no external dependencies or session management, and shows the most basic
  * example of how to handle Alexa Skill requests.
@@ -17,6 +19,8 @@ class FlashcardSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(FlashcardSpeechlet.class);
     private static final String CARD_TYPE_SLOT = "CardType";
     private static final String ANSWER_TYPE_SLOT = "Answer";
+    private static String question = "";
+    private static String answer = "";
 
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session)
@@ -32,7 +36,7 @@ class FlashcardSpeechlet implements Speechlet {
         log.info("onLaunch requestId={}, sessionId={}", request.getRequestId(),
                 session.getSessionId());
 
-        String speechOutput = "Which flash cards would you like to try?  The current options are: multiplication tables or multiplication tables.";
+        String speechOutput = "Which flash cards would you like to try?  The current option is: multiplication tables";
         // If the user either does not reply to the welcome message or says
         // something that is not understood, they will be prompted again with this text.
         String repromptText = "For instructions on what you can say, please say help me.";
@@ -83,15 +87,20 @@ class FlashcardSpeechlet implements Speechlet {
 
     private SpeechletResponse getCardTypeResponse(Intent cardType) {
         Slot cardTypeSlot = cardType.getSlot(CARD_TYPE_SLOT);
+        Random rand = new Random();
 
         if (cardTypeSlot != null && cardTypeSlot.getValue() != null) {
             String deckName = cardTypeSlot.getValue();
 
             //Check if this deck exists
             if(deckName.equals("multiplication tables")) {
+                int a = rand.nextInt(10) + 1;
+                int b = rand.nextInt(10) + 1;
+                answer = a*b + "";
+
                 // Create speech output
-                String askText = "What is 1 times 1?";
-                String repromptText = "What is 1 times 1?";
+                String askText = "What is " + a + " times " + b + "?";
+                String repromptText = "What is " + a + " times " + b + "?";
 
                 return newAskResponse(askText, repromptText);
             } else {
@@ -112,16 +121,16 @@ class FlashcardSpeechlet implements Speechlet {
         Slot answerTypeSlot = answerType.getSlot(ANSWER_TYPE_SLOT);
 
         if(answerTypeSlot != null && answerTypeSlot.getValue() != null){
-            String answer = answerTypeSlot.getValue();
+            String givenAnswer = answerTypeSlot.getValue();
 
-            if(answer.equals("1")){
+            if(givenAnswer.equals(answer)){
                 String responseText = "Correct!";
                 PlainTextOutputSpeech output = new PlainTextOutputSpeech();
                 output.setText(responseText);
 
                 return SpeechletResponse.newTellResponse(output);
             } else {
-                String responseText = answer + " is incorrect.  The correct answer is 1";
+                String responseText = givenAnswer + " is incorrect.  The correct answer is " + answer;
                 PlainTextOutputSpeech output = new PlainTextOutputSpeech();
                 output.setText(responseText);
 
@@ -164,10 +173,6 @@ class FlashcardSpeechlet implements Speechlet {
         reprompt.setOutputSpeech(speech);
 
         return SpeechletResponse.newAskResponse(speech, reprompt);
-    }
-
-    private String checkAnswer(String anserText){
-        return "";
     }
 
     /**
