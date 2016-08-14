@@ -73,22 +73,16 @@ public class RepeaterSpeechlet implements Speechlet {
         // any cleanup logic goes here
     }
 
-    /**
-     * Gets a random new fact from the list and returns to the user.
-     */
     private SpeechletResponse getRepeaterResponse(String repeatText) {
-
-        // Create speech output
-        String speechText = repeatText;
 
         // Create the Simple card content.
         SimpleCard card = new SimpleCard();
         card.setTitle("Repeater");
-        card.setContent(speechText);
+        card.setContent(repeatText);
 
         // Create the plain text output.
         PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-        speech.setText(speechText);
+        speech.setText(repeatText);
 
         return SpeechletResponse.newTellResponse(speech, card);
     }
